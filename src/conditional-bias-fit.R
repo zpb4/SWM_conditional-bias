@@ -31,16 +31,28 @@ q_obs<-Q_obs[which(qobs_idx==start_date):which(qobs_idx==end_date),4]
 q_sim<-Q_sim[which(qsim_idx==start_date):which(qsim_idx==end_date),4]
 
 #set any 0 or negative flow values to minimum non-zero flow
+#q_obs[q_obs==-9999]<-0
 q_obs[q_obs<=0]<-min(q_obs[q_obs>0])
 q_sim[q_sim<=0]<-min(q_sim[q_sim>0])
 
 #Fit conditional bias model
 cbias_out<-fit_cbias(Qobs = q_obs,Qsim = q_sim,start_date = start_date,end_date = end_date)
 
-cbias_fit<-cbias_out[[1]] #fitted model 
+cbias_fit<-cbias_out[[1]] #fitted model to use for 'sim_cbias' function demonstrated below
 cbias_qsim<-cbias_out[[2]] #estimated conditionally debiased simulation value
 
+#-----------'sim_cbias' function example---------
+#To simulate fitted conditional bias model for any arbitrary Qsim w/associate start and end dates, use 'sim_cbias' function
+st=qsim_st_date
+end=qsim_end_date
+#pick a new Qsim subset
+Qsim_examp<-Q_sim[which(qsim_idx==st):which(qsim_idx==end),4]
+#simulate the conditionally debiased Qsim with the 'sim_cbias' function
+Qsim_examp_cbias<-sim_cbias(cbias_fit = cbias_fit, Qsim = Qsim_examp, start_date = st, end_date = end)
+#-----------------------------------------------
+
 #calculate lambdas for both raw Qsim and debiased Qsim
+#q_obs[q_obs<=0]<-min(q_obs[q_obs>0])
 lambda_raw<-log(q_sim/q_obs)
 lambda_cbias<-log(cbias_qsim/q_obs)
 
