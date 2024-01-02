@@ -1,0 +1,12 @@
+
+
+# R data structure (.rds) files
+
+*.rds
+
+# png
+
+*.png
+
+*.ppt
+*.pptx
