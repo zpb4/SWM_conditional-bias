@@ -1,7 +1,8 @@
-#Fit VAR and SGED models to Differenced errors
+#load required packages
 library(stringr)
 library(ranger)
 
+#set working directory
 setwd('d:/SWM_conditional-bias/')
 
 #read in data
@@ -140,5 +141,12 @@ median(q_swm_raw) #median is not bad
 median(q_swm_cbias) #pretty close
 median(q_swm_rf_cbias) #pretty close but lower
 
+
+#----------------------------------------------------------------------------------------
+#output .csv file of conditionally debiased simulations
+dates<-as.character(seq(as.Date(start_date),as.Date(end_date),by='day'))
+data_out<-cbind(dates,q_obs,q_sim,cbias_qsim,rf_cbias_qsim)
+colnames(data_out)<-c('date','Qobs','Qsim','Qsim_cbias','Qsim_rf_cbias')
+write.csv(data_out,'./SWM-data_cond-debias.csv',row.names = FALSE)
 
 ##################################################END################################################
